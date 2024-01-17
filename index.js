@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 
 const { apiError } = require("./utils/apiError");
@@ -13,6 +14,7 @@ const node_env = process.env.NODE_ENV || "dev";
 
 app.use(express.json());
 app.use(express.static("public"));
+app.use(cookieParser());
 app.use(morgan(node_env));
 
 app.use("/", router);

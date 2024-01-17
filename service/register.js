@@ -1,0 +1,67 @@
+const { mapError } = require("../utils/apiError");
+const pool = require("../db/pool");
+const { hashPassword, generateJWT } = require("../utils/security");
+
+exports.createUser = async (req, res, next) => {
+  try {
+    let {
+      firstname,
+      lastname,
+      email,
+      password,
+      phone,
+      birthdate,
+      profile_picture,
+      profile_cover,
+    } = req.body;
+
+    let sql =
+      "INSERT INTO users (firstname,lastname,email,password,phone,birthdate,profile_picture,profile_cover,register_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)";
+
+    let date_now = new Date();
+    let hashPass = await hashPassword(password, next);
+    let result = await pool.query(sql, [
+      firstname,
+      lastname,
+      email,
+      hashPass,
+      phone,
+      birthdate,
+      profile_picture,
+      profile_cover,
+      date_now,
+    ]);
+
+    if (result.rowCount > 0) {
+      const token = generateJWT({ email, hashPass });
+      res
+        .status(200)
+        .cookie("jwt", token, {
+          expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+          httpOnly: true,
+          //secure: true,
+        })
+        .json({ status: 200, data: "create succ" });
+    } else {
+      res.status(500).json({ status: 500, date: "resgister error" });
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.constraint) {
+      mapError(400, err.detail, next);
+    } else {
+      mapError(500, "internal server error", next);
+    }
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  //create verify token first
+  try {
+    let { userId } = req.body;
+    console.log(req.cookies);
+    res.status(200).json({ status: 200, data: req.cookies });
+  } catch (err) {
+    console.log(err);
+  }
+};
