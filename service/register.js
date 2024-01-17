@@ -16,7 +16,7 @@ exports.createUser = async (req, res, next) => {
     } = req.body;
 
     let sql =
-      "INSERT INTO users (firstname,lastname,email,password,phone,birthdate,profile_picture,profile_cover,register_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)";
+      "INSERT INTO users (firstname,lastname,email,password,phone,birthdate,profile_picture,profile_cover,register_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *";
 
     let date_now = new Date();
     let hashPass = await hashPassword(password, next);
@@ -31,9 +31,12 @@ exports.createUser = async (req, res, next) => {
       profile_cover,
       date_now,
     ]);
-
     if (result.rowCount > 0) {
-      const token = generateJWT({ email, hashPass });
+      const token = generateJWT({
+        userId: result.rows[0].userId,
+        email,
+        hashPass,
+      });
       res
         .status(200)
         .cookie("jwt", token, {

@@ -1,5 +1,6 @@
 const express = require("express");
 const { createUser, deleteUser } = require("../service/register");
+const { userLogin } = require("../service/login");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -7,6 +8,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/register", createUser);
+router.post("/login", userLogin);
 router.delete("/:id", deleteUser);
 
 module.exports = router;
