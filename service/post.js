@@ -3,12 +3,16 @@ const pool = require("../db/pool");
 
 exports.createPostText = async (req, res, next) => {
   try {
-    let { postText } = req.body;
+    let { postText, postType } = req.body;
     let sql =
-      "insert into posts(post_content,post_date,userid) values($1,$2,$3) RETURNING *";
+      "insert into posts(post_content,post_date,post_type,userid) values($1,$2,$3,$4) RETURNING *";
     let date_now = new Date();
-    let result = await pool.query(sql, [postText, date_now, req.userId]);
-    console.log(result.rows);
+    let result = await pool.query(sql, [
+      postText,
+      date_now,
+      postType,
+      req.userId,
+    ]);
     if (result.rowCount > 0) {
       res
         .status(201)
@@ -21,5 +25,45 @@ exports.createPostText = async (req, res, next) => {
     } else {
       mapError(500, "internal server error", next);
     }
+  }
+};
+
+exports.getStandardPost = async (req, res, next) => {
+  try {
+    let sql =
+      "select post_content , post_picture from posts where post_type = $1 order by post_date desc";
+    let result = await pool.query(sql, ["public"]);
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: 200,
+        data: result.rows,
+        message: "fetch public post success",
+      });
+    } else {
+      mapError(500, "fetch public post error", next);
+    }
+  } catch (err) {
+    console.log(err);
+    mapError(500, "internal server error", next);
+  }
+};
+
+exports.getMyPost = async (req, res, next) => {
+  try {
+    let sql =
+      "select p.post_content , p.post_picture , u.firstname , u.lastname , p.post_date from posts p left join users u on p.userid = u.userid where u.userid = $1 order by p.post_date desc";
+    let result = await pool.query(sql, [req.userId]);
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: 200,
+        data: result.rows,
+        message: "fetch my post success",
+      });
+    } else {
+      mapError(500, "fetch my post failure", next);
+    }
+  } catch (err) {
+    console.log(err);
+    mapError(500, "internal server error", next);
   }
 };

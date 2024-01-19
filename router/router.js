@@ -3,7 +3,7 @@ const { createUser, deleteUser } = require("../service/register");
 const { userLogin } = require("../service/login");
 const pool = require("../db/pool");
 const jwt = require("jsonwebtoken");
-const { createPostText } = require("../service/post");
+const { createPostText, getMyPost } = require("../service/post");
 const authen = require("../middleware/authen");
 const router = express.Router();
 
@@ -34,5 +34,6 @@ router.post("/login", userLogin);
 router.delete("/:id", deleteUser);
 
 router.post("/postOnlyText", authen, createPostText);
+router.get("/getMyPost", authen, getMyPost);
 
 module.exports = router;

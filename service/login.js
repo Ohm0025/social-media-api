@@ -13,7 +13,6 @@ exports.userLogin = async (req, res, next) => {
       let getHashPass = result.rows[0].password;
       let isValidPass = await comparePass(Password, getHashPass);
       if (isValidPass) {
-        console.log(result.rows[0].userid);
         let token = generateJWT({ userId: result.rows[0].userid });
         res
           .status(200)
