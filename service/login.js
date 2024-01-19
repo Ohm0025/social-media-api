@@ -4,18 +4,20 @@ const { comparePass, generateJWT } = require("../utils/security");
 
 exports.userLogin = async (req, res, next) => {
   try {
-    let { email, phone, password } = req.body;
-    let sql = "select * from users u where u.email = $1 or u.phone = $2";
+    let { EmailAddressOrPhoneNumber, Password } = req.body;
+    let sql = "select * from users u where u.emailorphone = $1";
     let result = await pool.query(sql, [
-      email ? email : "",
-      phone ? phone : "",
+      EmailAddressOrPhoneNumber ? EmailAddressOrPhoneNumber : "",
     ]);
     if (result.rowCount > 0) {
       let getHashPass = result.rows[0].password;
-      let isValidPass = await comparePass(password, getHashPass);
+      let isValidPass = await comparePass(Password, getHashPass);
       if (isValidPass) {
-        let token = generateJWT({ userId: result.rows[0].userId });
-        res.status(200).json({ status: 200, data: token });
+        console.log(result.rows[0].userid);
+        let token = generateJWT({ userId: result.rows[0].userid });
+        res
+          .status(200)
+          .json({ status: 200, data: token, message: "login success" });
       } else {
         mapError(400, "password invalid", next);
       }

@@ -5,28 +5,26 @@ const { hashPassword, generateJWT } = require("../utils/security");
 exports.createUser = async (req, res, next) => {
   try {
     let {
-      firstname,
-      lastname,
-      email,
-      password,
-      phone,
-      birthdate,
+      FirstName,
+      LastName,
+      EmailAddressOrPhoneNumber,
+      Password,
+      BirthDate,
       profile_picture,
       profile_cover,
     } = req.body;
 
     let sql =
-      "INSERT INTO users (firstname,lastname,email,password,phone,birthdate,profile_picture,profile_cover,register_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *";
+      "INSERT INTO users (firstname,lastname,emailorphone,password,birthdate,profile_picture,profile_cover,register_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *";
 
     let date_now = new Date();
-    let hashPass = await hashPassword(password, next);
+    let hashPass = await hashPassword(Password, next);
     let result = await pool.query(sql, [
-      firstname,
-      lastname,
-      email,
+      FirstName,
+      LastName,
+      EmailAddressOrPhoneNumber,
       hashPass,
-      phone,
-      birthdate,
+      BirthDate,
       profile_picture,
       profile_cover,
       date_now,
@@ -34,17 +32,17 @@ exports.createUser = async (req, res, next) => {
     if (result.rowCount > 0) {
       const token = generateJWT({
         userId: result.rows[0].userId,
-        email,
+        EmailAddressOrPhoneNumber,
         hashPass,
       });
       res
         .status(200)
-        .cookie("jwt", token, {
-          expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
-          httpOnly: true,
-          //secure: true,
-        })
-        .json({ status: 200, data: "create succ" });
+        // .cookie("jwt", token, {
+        //   expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+        //   httpOnly: true,
+        //   //secure: true,
+        // })
+        .json({ status: 200, data: token, message: "create user success" });
     } else {
       res.status(500).json({ status: 500, date: "resgister error" });
     }
