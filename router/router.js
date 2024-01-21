@@ -3,8 +3,13 @@ const { createUser, deleteUser } = require("../service/register");
 const { userLogin } = require("../service/login");
 const pool = require("../db/pool");
 const jwt = require("jsonwebtoken");
-const { createPostText, getMyPost } = require("../service/post");
+const {
+  createPostText,
+  getMyPost,
+  createPostImgText,
+} = require("../service/post");
 const authen = require("../middleware/authen");
+const upload = require("../middleware/upload");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -35,5 +40,6 @@ router.delete("/:id", deleteUser);
 
 router.post("/postOnlyText", authen, createPostText);
 router.get("/getMyPost", authen, getMyPost);
+router.post("/postTextImg", authen, upload.single("image"), createPostImgText);
 
 module.exports = router;

@@ -51,7 +51,7 @@ exports.getStandardPost = async (req, res, next) => {
 exports.getMyPost = async (req, res, next) => {
   try {
     let sql =
-      "select p.post_content , p.post_picture , u.firstname , u.lastname , p.post_date from posts p left join users u on p.userid = u.userid where u.userid = $1 order by p.post_date desc";
+      "select p.post_content , p.post_picture , u.firstname , u.lastname , p.post_date from posts p left join users u on p.userid = u.userid where u.userid = $1 order by p.post_date desc,p.postid desc";
     let result = await pool.query(sql, [req.userId]);
     if (result.rowCount > 0) {
       res.status(200).json({
@@ -65,5 +65,38 @@ exports.getMyPost = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     mapError(500, "internal server error", next);
+  }
+};
+
+exports.createPostImgText = async (req, res, next) => {
+  try {
+    let { postText, postType } = req.body;
+    let now_date = new Date();
+    let pathPic = req.file ? req.file.path : "";
+    let sql =
+      "insert into posts(post_content,post_picture,post_date,post_type,userid) values($1,$2,$3,$4,$5) RETURNING *";
+    let result = await pool.query(sql, [
+      postText,
+      pathPic,
+      now_date,
+      postType,
+      req.userId,
+    ]);
+    if (result.rowCount > 0) {
+      res
+        .status(201)
+        .json({ status: 201, data: result, message: "create post success" });
+    } else {
+      res
+        .status(500)
+        .json({ status: 500, data: result, message: "create post failure" });
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.constraint) {
+      mapError(400, err.detail, next);
+    } else {
+      mapError(500, "internal server error", next);
+    }
   }
 };
