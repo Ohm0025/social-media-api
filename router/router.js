@@ -1,7 +1,7 @@
 const express = require("express");
 const { createUser, deleteUser } = require("../service/register");
 const { userLogin } = require("../service/login");
-const { getMoreFriend } = require("../service/friend");
+const { getMoreFriend, fetchMyFriend } = require("../service/friend");
 const pool = require("../db/pool");
 const jwt = require("jsonwebtoken");
 const {
@@ -44,5 +44,6 @@ router.get("/getMyPost", authen, getMyPost);
 router.post("/postTextImg", authen, upload.single("image"), createPostImgText);
 
 router.post("/getMoreFriend", authen, getMoreFriend);
+router.get("/fetchMyFriend", authen, fetchMyFriend);
 
 module.exports = router;
