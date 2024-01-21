@@ -3,6 +3,8 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const http = require("http");
+const socketIo = require("socket.io");
 
 const { apiError } = require("./utils/apiError");
 const router = require("./router/router");
@@ -29,4 +31,24 @@ app.all("*", (req, res, next) => {
 });
 app.use(apiError);
 
-app.listen(port, () => console.log("server run on " + port));
+const server = http.createServer(app);
+const io = socketIo(server);
+
+io.on("connection", (socket) => {
+  console.log(`User connected with ID: ${socket.id}`);
+
+  socket.emit("your socket id", { socketId: socket.id });
+
+  socket.on("private message", ({ recipient, message }) => {
+    io.to(recipient).emit("private message", {
+      sender: socket.id,
+      message,
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnect");
+  });
+});
+
+server.listen(port, () => console.log("server run on " + port));

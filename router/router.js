@@ -1,6 +1,7 @@
 const express = require("express");
 const { createUser, deleteUser } = require("../service/register");
 const { userLogin } = require("../service/login");
+const { getMoreFriend } = require("../service/friend");
 const pool = require("../db/pool");
 const jwt = require("jsonwebtoken");
 const {
@@ -41,5 +42,7 @@ router.delete("/:id", deleteUser);
 router.post("/postOnlyText", authen, createPostText);
 router.get("/getMyPost", authen, getMyPost);
 router.post("/postTextImg", authen, upload.single("image"), createPostImgText);
+
+router.post("/getMoreFriend", authen, getMoreFriend);
 
 module.exports = router;
