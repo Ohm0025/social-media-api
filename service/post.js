@@ -51,7 +51,7 @@ exports.getStandardPost = async (req, res, next) => {
 exports.getMyPost = async (req, res, next) => {
   try {
     let sql =
-      "select p.post_content , p.post_picture , u.firstname , u.lastname , p.post_date from posts p left join users u on p.userid = u.userid where u.userid = $1 order by p.post_date desc,p.postid desc";
+      "select p.post_content ,p.postid , p.post_picture , u.firstname , u.lastname , p.post_date from posts p left join users u on p.userid = u.userid where u.userid = $1 order by p.post_date desc,p.postid desc";
     let result = await pool.query(sql, [req.userId]);
     if (result.rowCount > 0) {
       res.status(200).json({
@@ -98,5 +98,24 @@ exports.createPostImgText = async (req, res, next) => {
     } else {
       mapError(500, "internal server error", next);
     }
+  }
+};
+
+exports.removePost = async (req, res, next) => {
+  try {
+    let { postid } = req.body;
+    let sql = "DELETE FROM posts WHERE postid=$1";
+    let result = await pool.query(sql, [postid]);
+    console.log(postid);
+    if (result.rowCount > 0) {
+      res.status(201).json({ status: 201, message: "delete post success" });
+    } else {
+      res
+        .status(500)
+        .json({ status: 500, data: result, message: "delete post failure" });
+    }
+  } catch (err) {
+    console.log(err);
+    mapError(500, "internal server error", next);
   }
 };

@@ -15,6 +15,7 @@ const {
   createPostText,
   getMyPost,
   createPostImgText,
+  removePost,
 } = require("../service/post");
 const authen = require("../middleware/authen");
 const upload = require("../middleware/upload");
@@ -49,6 +50,7 @@ router.delete("/:id", deleteUser);
 router.post("/postOnlyText", authen, createPostText);
 router.get("/getMyPost", authen, getMyPost);
 router.post("/postTextImg", authen, upload.single("image"), createPostImgText);
+router.post("/removePost", authen, removePost);
 
 router.post("/getMoreFriend", authen, getMoreFriend);
 router.get("/fetchMyFriend", authen, fetchMyFriend);
