@@ -19,6 +19,7 @@ const {
 } = require("../service/post");
 const authen = require("../middleware/authen");
 const upload = require("../middleware/upload");
+const { updateProfilePicture, updateProfileCover } = require("../service/user");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -46,6 +47,18 @@ router.post("/cookies", async (req, res, next) => {
 router.post("/register", createUser);
 router.post("/login", userLogin);
 router.delete("/:id", deleteUser);
+router.post(
+  "/updateProfilePicture",
+  authen,
+  upload.single("image"),
+  updateProfilePicture
+);
+router.post(
+  "/updateProfileCover",
+  authen,
+  upload.single("cover"),
+  updateProfileCover
+);
 
 router.post("/postOnlyText", authen, createPostText);
 router.get("/getMyPost", authen, getMyPost);
