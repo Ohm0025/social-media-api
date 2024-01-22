@@ -16,6 +16,7 @@ const {
   getMyPost,
   createPostImgText,
   removePost,
+  getStandardPost,
 } = require("../service/post");
 const authen = require("../middleware/authen");
 const upload = require("../middleware/upload");
@@ -60,6 +61,7 @@ router.post(
   updateProfileCover
 );
 
+router.get("/getStandardPost", authen, getStandardPost);
 router.post("/postOnlyText", authen, createPostText);
 router.get("/getMyPost", authen, getMyPost);
 router.post("/postTextImg", authen, upload.single("image"), createPostImgText);

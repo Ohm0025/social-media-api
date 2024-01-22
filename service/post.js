@@ -31,8 +31,13 @@ exports.createPostText = async (req, res, next) => {
 exports.getStandardPost = async (req, res, next) => {
   try {
     let sql =
-      "select post_content , post_picture from posts where post_type = $1 order by post_date desc";
-    let result = await pool.query(sql, ["public"]);
+      "select p.post_content,p.post_date , p.post_picture from posts p left join comments c on c.postid = p.postid left join users u on u.userid = p.userid left join friends f on f.requesterid = u.userid or f.accepterid = u.userid where post_type = $1 or (u.userid = $4 and post_type = $2 and f.status = $3) order by post_date desc";
+    let result = await pool.query(sql, [
+      "public",
+      "only_friend",
+      "accept",
+      req.userId,
+    ]);
     if (result.rowCount > 0) {
       res.status(200).json({
         status: 200,
