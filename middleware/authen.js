@@ -12,16 +12,16 @@ module.exports = async (req, res, next) => {
     if (!token) {
       return mapError(401, "unauthorized please login", next);
     }
-    console.log(token);
+
     const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    console.log(payload);
+
     let sql = "select * from users u where u.userid = $1";
     let result = await pool.query(sql, [payload.userId]);
     if (!result.rowCount > 0) {
       return mapError(401, "unauthorized please login", next);
     }
     req.userId = result.rows[0].userid;
-    console.log(req.userId);
+
     next();
   } catch (err) {
     next(err);
