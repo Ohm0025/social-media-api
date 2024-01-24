@@ -1,5 +1,5 @@
-const { mapError } = require("../utils/apiError");
-const pool = require("../db/pool");
+const { mapError } = require("../../utils/apiError");
+const pool = require("../../db/pool");
 
 exports.createPostText = async (req, res, next) => {
   try {
@@ -31,7 +31,7 @@ exports.createPostText = async (req, res, next) => {
 exports.getStandardPost = async (req, res, next) => {
   try {
     let sql =
-      "select p.post_content,p.post_date , p.post_picture from posts p left join comments c on c.postid = p.postid left join users u on u.userid = p.userid left join friends f on f.requesterid = u.userid or f.accepterid = u.userid where post_type = $1 or (u.userid = $4 and post_type = $2 and f.status = $3) order by post_date desc";
+      "select p.post_content,p.post_date , p.post_picture from posts p left join comments c on c.postid = p.postid left join users u on u.userid = p.userid left join friends f on f.requesterid = u.userid or f.accepterid = u.userid left join users u2 on f.requesterid = u2.userid or f.accepterid = u2.userid where post_type = $1 or (post_type = $2 and f.status = $3 and u2.userid != $4) or (u.userid = $4 and u2.userid != $4) order by post_date desc";
     let result = await pool.query(sql, [
       "public",
       "only_friend",

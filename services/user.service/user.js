@@ -1,5 +1,5 @@
-const { mapError } = require("../utils/apiError");
-const pool = require("../db/pool");
+const { mapError } = require("../../utils/apiError");
+const pool = require("../../db/pool");
 
 exports.updateProfilePicture = async (req, res, next) => {
   try {

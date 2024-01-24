@@ -1,6 +1,6 @@
-const { mapError } = require("../utils/apiError");
-const pool = require("../db/pool");
-const { hashPassword, generateJWT } = require("../utils/security");
+const { mapError } = require("../../utils/apiError");
+const pool = require("../../db/pool");
+const { hashPassword, generateJWT } = require("../../utils/security");
 
 exports.createUser = async (req, res, next) => {
   try {

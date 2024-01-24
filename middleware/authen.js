@@ -13,7 +13,18 @@ module.exports = async (req, res, next) => {
       return mapError(401, "unauthorized please login", next);
     }
 
-    const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const payload = jwt.verify(
+      token,
+      process.env.JWT_SECRET_KEY,
+      (err, decode) => {
+        if (err) {
+          return mapError(401, "unauthorized please login", next);
+        }
+        if (decode) {
+          return decode;
+        }
+      }
+    );
 
     let sql = "select * from users u where u.userid = $1";
     let result = await pool.query(sql, [payload.userId]);

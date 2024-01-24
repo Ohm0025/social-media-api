@@ -7,7 +7,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 
 const { apiError } = require("./utils/apiError");
-const router = require("./router/router");
+const router = require("./routes/router");
 
 const app = express();
 

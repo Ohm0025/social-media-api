@@ -1,5 +1,5 @@
-const pool = require("../db/pool");
-const { mapError } = require("../utils/apiError");
+const pool = require("../../db/pool");
+const { mapError } = require("../../utils/apiError");
 
 exports.getMoreFriend = async (req, res, next) => {
   try {

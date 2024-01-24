@@ -1,6 +1,6 @@
-const pool = require("../db/pool");
-const { mapError } = require("../utils/apiError");
-const { comparePass, generateJWT } = require("../utils/security");
+const pool = require("../../db/pool");
+const { mapError } = require("../../utils/apiError");
+const { comparePass, generateJWT } = require("../../utils/security");
 
 exports.userLogin = async (req, res, next) => {
   try {
