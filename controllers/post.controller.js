@@ -8,10 +8,12 @@ const { mapError } = require("../utils/apiError");
 
 exports.createPost = async (req, res, next) => {
   try {
+    console.log("ararar");
     let { postText, postType, parentId } = req.body;
+    console.log(req.body);
     let result = await createPost(
       postText,
-      req.files?.post_picture,
+      req.files?.post_picture[0].path,
       postType,
       req.userId,
       parentId
@@ -20,6 +22,9 @@ exports.createPost = async (req, res, next) => {
       res
         .status(201)
         .json({ status: 201, data: result, message: "create post success" });
+    } else {
+      console.log("you can not post");
+      mapError(400, "you can not post");
     }
   } catch (err) {
     console.log(err);
@@ -69,7 +74,7 @@ exports.getMyPost = async (req, res, next) => {
 
 exports.removePost = async (req, res, next) => {
   try {
-    let { postid } = req.body;
+    let { postid } = req.params;
     let result = await removePost(postid, req.userId);
     if (result.rowCount > 0) {
       res.status(200).json({ status: 200, message: "remove post success" });

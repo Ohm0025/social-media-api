@@ -7,7 +7,6 @@ const {
 
 const userRouter = express.Router();
 
-userRouter.route("/user").patch(updateUser).post(createUser);
-userRouter.route("/login").post(loginUser);
+userRouter.patch("/", updateUser);
 
 module.exports = userRouter;

@@ -8,6 +8,7 @@ const socketIo = require("socket.io");
 
 const { apiError } = require("./utils/apiError");
 const router = require("./routes/router");
+const bodyParser = require("body-parser");
 
 const app = express();
 
@@ -16,6 +17,7 @@ const port = process.env.PORT || 8080;
 const node_env = process.env.NODE_ENV || "dev";
 
 app.use(cors());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static("public"));

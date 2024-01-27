@@ -2,20 +2,34 @@ const {
   updateUser,
   createUser,
   loginUser,
+  selfDelete,
 } = require("../services/user.service");
 const { mapError } = require("../utils/apiError");
+const { generateJWT, hashPassword } = require("../utils/security");
 
 exports.updateUser = async (req, res, next) => {
   try {
-    console.log(req.files);
+    let profile_picture = req.files?.profile_picture
+      ? req.files?.profile_picture[0]
+        ? req.files?.profile_picture[0].path
+        : undefined
+      : undefined;
+
+    let profile_cover = req.files?.profile_cover
+      ? req.files?.profile_cover[0]
+        ? req.files?.profile_cover[0].path
+        : undefined
+      : undefined;
+
     let result = await updateUser(
       {
-        profile_picture: req.files.profile_picture || null,
-        profile_cover: req.files.profile_cover || null,
+        profile_picture: profile_picture || null,
+        profile_cover: profile_cover || null,
         description: req.body.description,
       },
       req.userId
     );
+    console.log(result);
     if (result.rowCount > 0) {
       res.status(201).json({ status: 201, message: `update picture success` });
     } else {
@@ -29,23 +43,40 @@ exports.updateUser = async (req, res, next) => {
 };
 
 exports.createUser = async (req, res, next) => {
+  let uid;
   try {
-    let token = await createUser(req.body);
-    if (token) {
-      res
-        .status(201)
-        .json({ status: 200, data: token, message: "create user success" });
-    } else {
-      //res.status(400).json({ status: 400, date: "create user error" });
-      mapError(400, "create user failure", next);
+    console.log(req.body);
+    let result = await createUser(req.body);
+    if (result.rowCount > 0) {
+      let hashPass = await hashPassword(req.body.Password);
+      uid = result.rows[0].userId;
+      const token = generateJWT({
+        userId: result.rows[0].userId,
+        EmailAddressOrPhoneNumber: req.body.EmailAddressOrPhoneNumber,
+        hashPass,
+      });
+      if (token) {
+        res
+          .status(201)
+          .json({ status: 201, data: token, message: "create user success" });
+      } else {
+        //res.status(400).json({ status: 400, date: "create user error" });
+        selfDelete(result.rows[0].userid);
+        mapError(400, "create user failure", next);
+      }
     }
   } catch (err) {
     console.log(err);
-    mapError(500, "error at create user", next);
+    selfDelete(uid);
+    if (err.constraint) {
+      mapError(400, err.detail, next);
+    } else {
+      mapError(500, "internal server error", next);
+    }
   }
 };
 
-exports.loginUser = async () => {
+exports.loginUser = async (req, res, next) => {
   try {
     let { EmailAddressOrPhoneNumber, Password } = req.body;
     const token = await loginUser(EmailAddressOrPhoneNumber, Password);

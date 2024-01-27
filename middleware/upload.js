@@ -33,6 +33,12 @@ const uploadMiddleware = (req, res, next) => {
     {
       name: "post_picture",
     },
+    {
+      name: "postText",
+    },
+    {
+      name: "postType",
+    },
   ])(req, res, (err) => {
     if (err) {
       return res.status(400).json({ error: err.message });

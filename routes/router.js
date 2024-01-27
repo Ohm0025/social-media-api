@@ -4,11 +4,15 @@ const postRouter = require("./post.route");
 const authen = require("../middleware/authen");
 const uploadPicture = require("../middleware/upload");
 const { getCookies } = require("../controllers/cookie.controller");
+const { createUser, loginUser } = require("../controllers/user.controller");
 
 const router = express.Router();
 
-router.use(getCookies);
-router.use(authen, uploadPicture, userRouter);
-router.use(authen, uploadPicture, postRouter);
+router.post("/cookies", getCookies);
+router.post("/register", createUser);
+router.post("/login", loginUser);
 
+router.use(authen, uploadPicture);
+router.use("/post", postRouter);
+router.use("/user", userRouter);
 module.exports = router;

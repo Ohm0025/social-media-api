@@ -28,7 +28,9 @@ exports.getCookies = async (req, res, next) => {
         let result = await pool.query(sql, [payload.userId]);
         // console.log(result);
         if (result.rowCount > 0) {
-          res.status(200).json({ status: 200, cookies: true });
+          res
+            .status(200)
+            .json({ status: 200, cookies: true, data: result.rows[0] });
         } else {
           res.status(400).json({ status: 400, cookie: false });
         }
