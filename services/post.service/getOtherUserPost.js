@@ -2,7 +2,8 @@ const pool = require("../../db/pool");
 
 exports.getOtherUserPost = async (userid, otherid) => {
   let sql =
-    "select distinct * from friends f left join users u on f.requesterid = u.userid or f.accepterid = u.userid left join posts p on p.userid = u.userid where u.userid = $1 and f.status = $2 and (f.requesterid = $3 or f.accepterid = $3)";
+    "select p.post_date,p.post_picture,p.post_content,p.postid,f.friendid,u.profile_picture,u.profile_cover,u.firstname,u.lastname,u.description from friends f left join users u on f.requesterid = u.userid or f.accepterid = u.userid left join posts p on p.userid = u.userid where u.userid = $3 and f.status = $2 and (f.requesterid = $1 or f.accepterid = $1) and p.postid is not null";
+
   let result = await pool.query(sql, [userid, "accept", otherid]);
   if (result.rowCount > 0) {
     return result;
