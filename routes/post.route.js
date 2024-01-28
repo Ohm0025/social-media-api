@@ -13,6 +13,7 @@ postRouter.route("/").get(getStandardPost).post(createPost);
 postRouter.route("/:postid").delete(removePost);
 
 postRouter.route("/postMy").get(getMyPost);
-module.exports = postRouter;
 
 postRouter.route("/:otherid").get(getOtherUserPost);
+
+module.exports = postRouter;

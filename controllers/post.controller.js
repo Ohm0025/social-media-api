@@ -25,7 +25,7 @@ exports.createPost = async (req, res, next) => {
         .json({ status: 201, data: result, message: "create post success" });
     } else {
       console.log("you can not post");
-      mapError(400, "you can not post");
+      mapError(400, "you can not post", next);
     }
   } catch (err) {
     console.log(err);
