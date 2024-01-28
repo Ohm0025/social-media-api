@@ -3,6 +3,7 @@ const {
   getStandardPost,
   getMyPost,
   removePost,
+  getOtherUserPost,
 } = require("../services/post.service");
 const { mapError } = require("../utils/apiError");
 
@@ -13,7 +14,7 @@ exports.createPost = async (req, res, next) => {
     console.log(req.body);
     let result = await createPost(
       postText,
-      req.files?.post_picture[0].path,
+      req.files?.post_picture ? req.files?.post_picture[0]?.path : "",
       postType,
       req.userId,
       parentId
@@ -80,6 +81,33 @@ exports.removePost = async (req, res, next) => {
       res.status(200).json({ status: 200, message: "remove post success" });
     } else {
       mapError(400, "remove post failure", next);
+    }
+  } catch (err) {
+    console.log(err);
+    mapError(500, "internal server error", next);
+  }
+};
+
+exports.getOtherUserPost = async (req, res, next) => {
+  try {
+    let { otherid } = req.params;
+    let result = await getOtherUserPost(req.userId, otherid);
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: 200,
+        message: "get other post success",
+        data: result.rows,
+        userObj: {
+          userid: result.rows[0].userid,
+          description: result.rows[0].description,
+          profile_picture: result.rows[0].profile_picture,
+          profile_cover: result.rows[0].profile_cover,
+          firstname: result.rows[0].firstname,
+          lastname: result.rows[0].lastname,
+        },
+      });
+    } else {
+      mapError(400, "get other post failure", next);
     }
   } catch (err) {
     console.log(err);

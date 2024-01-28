@@ -9,8 +9,8 @@ const {
 } = require("../controllers/friend.controller");
 const friendRouter = express.Router();
 
-friendRouter.route("/friend").get(getMyfriend).post(acceptFriend);
-friendRouter.route("/friendRequest").get(getRequest).post(requestFriend);
-friendRouter.route("/friendPending").get(getPending).post(getMoreFriend);
+friendRouter.route("/").get(getMyfriend).post(acceptFriend);
+friendRouter.route("/request").get(getRequest).post(requestFriend);
+friendRouter.route("/pending").get(getPending).post(getMoreFriend);
 
 module.exports = friendRouter;

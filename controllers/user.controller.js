@@ -29,9 +29,13 @@ exports.updateUser = async (req, res, next) => {
       },
       req.userId
     );
-    console.log(result);
+
     if (result.rowCount > 0) {
-      res.status(201).json({ status: 201, message: `update picture success` });
+      res.status(201).json({
+        status: 201,
+        message: `update picture success`,
+        data: result.rows[0],
+      });
     } else {
       //res.status(400).json({ status: 400, message: `update picture failure` });
       mapError(400, "update picture failure", next);
@@ -45,7 +49,6 @@ exports.updateUser = async (req, res, next) => {
 exports.createUser = async (req, res, next) => {
   let uid;
   try {
-    console.log(req.body);
     let result = await createUser(req.body);
     if (result.rowCount > 0) {
       let hashPass = await hashPassword(req.body.Password);

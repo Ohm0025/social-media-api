@@ -1,6 +1,7 @@
 const express = require("express");
 const userRouter = require("./user.route");
 const postRouter = require("./post.route");
+const friendRouter = require("./friend.route");
 const authen = require("../middleware/authen");
 const uploadPicture = require("../middleware/upload");
 const { getCookies } = require("../controllers/cookie.controller");
@@ -15,4 +16,5 @@ router.post("/login", loginUser);
 router.use(authen, uploadPicture);
 router.use("/post", postRouter);
 router.use("/user", userRouter);
+router.use("/friend", friendRouter);
 module.exports = router;

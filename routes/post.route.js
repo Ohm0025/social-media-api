@@ -4,6 +4,7 @@ const {
   removePost,
   getStandardPost,
   getMyPost,
+  getOtherUserPost,
 } = require("../controllers/post.controller");
 const postRouter = express.Router();
 
@@ -13,3 +14,5 @@ postRouter.route("/:postid").delete(removePost);
 
 postRouter.route("/postMy").get(getMyPost);
 module.exports = postRouter;
+
+postRouter.route("/:otherid").get(getOtherUserPost);
