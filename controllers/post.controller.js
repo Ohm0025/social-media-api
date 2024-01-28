@@ -98,12 +98,30 @@ exports.getOtherUserPost = async (req, res, next) => {
         message: "get other post success",
         data: result.rows,
         userObj: {
-          userid: result.rows[0].userid,
-          description: result.rows[0].description,
-          profile_picture: result.rows[0].profile_picture,
-          profile_cover: result.rows[0].profile_cover,
-          firstname: result.rows[0].firstname,
-          lastname: result.rows[0].lastname,
+          userid:
+            result.rows.length === 0
+              ? result.sendObj.userId
+              : result.rows[0].userid,
+          description:
+            result.rows.length === 0
+              ? result.sendObj.description
+              : result.rows[0].description,
+          profile_picture:
+            result.rows.length === 0
+              ? result.sendObj.profile_picture
+              : result.rows[0].profile_picture,
+          profile_cover:
+            result.rows.length === 0
+              ? result.sendObj.profile_cover
+              : result.rows[0].profile_cover,
+          firstname:
+            result.rows.length === 0
+              ? result.sendObj.firstname
+              : result.rows[0].firstname,
+          lastname:
+            result.rows.length === 0
+              ? result.sendObj.lastname
+              : result.rows[0].lastname,
         },
       });
     } else {
