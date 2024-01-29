@@ -10,7 +10,7 @@ module.exports = async (postid, userid) => {
   } else {
     let sql3 =
       "INSERT INTO like_post (postid, userid) VALUES($1,$2) RETURNING *";
-    let result3 = await pool.query(sql3, [postid, req.userId]);
+    let result3 = await pool.query(sql3, [postid, userid]);
     return result3;
   }
 };

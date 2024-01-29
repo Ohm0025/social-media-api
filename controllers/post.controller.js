@@ -40,6 +40,7 @@ exports.createPost = async (req, res, next) => {
 exports.getStandardPost = async (req, res, next) => {
   try {
     let result = await getStandardPost(req.userId);
+    console.log(result);
     if (result.rowCount > 0) {
       res.status(200).json({
         status: 200,

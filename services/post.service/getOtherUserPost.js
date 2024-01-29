@@ -1,15 +1,22 @@
 const pool = require("../../db/pool");
+const fs = require("fs");
 
 exports.getOtherUserPost = async (userid, otherid) => {
-  let sql =
-    "select p.post_date,p.post_picture,p.post_content,p.postid,f.friendid,u.profile_picture,u.profile_cover,u.firstname,u.lastname,u.description from friends f left join users u on f.requesterid = u.userid or f.accepterid = u.userid left join posts p on p.userid = u.userid where u.userid = $3 and f.status = $2 and (f.requesterid = $1 or f.accepterid = $1) and p.postid is not null";
+  // let sql =
+  //   "select distinct(p.postid),p.post_date,p.post_picture,p.post_content,f.friendid,u.profile_picture,u.profile_cover,u.firstname,u.lastname,u.description,u.userid,count(distinct l.postid) count_like , count(distinct p2.postid) count_comment from friends f left join posts p2 on p2.parentid = p.postid left join like_post l on l.postid = p.postid left join users u on f.requesterid = u.userid or f.accepterid = u.userid left join posts p on p.userid = u.userid where p.parentid isnull and u.userid = $3 and f.status = $2 and (f.requesterid = $1 or f.accepterid = $1) and p.postid is not null group by (p.postid,u.firstname,u.lastname,u.profile_picture,l.userid,u.userid) order by p.post_date desc,p.postid desc";
+
+  let sql = fs.readFileSync("services/post.service/text.txt", {
+    encoding: "utf8",
+  });
 
   let result = await pool.query(sql, [userid, "accept", otherid]);
   if (result.rowCount > 0) {
     return result;
   }
-  let sql2 =
-    "select * from users u left join posts p on u.userid = p.userid where u.userid = $1 and p.post_type = $2";
+  let sql2 = fs.readFileSync("services/post.service/text2/txt", {
+    encoding: "utf8",
+  });
+
   let result2 = await pool.query(sql2, [otherid, "public"]);
   if (result2.rowCount > 0) {
     return result2;
