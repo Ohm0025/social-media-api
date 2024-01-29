@@ -34,23 +34,47 @@ app.all("*", (req, res, next) => {
 app.use(apiError);
 
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:5173",
+  },
+});
+
+const connectedUsers = {};
 
 io.on("connection", (socket) => {
   console.log(`User connected with ID: ${socket.id}`);
 
   socket.emit("your socket id", { socketId: socket.id });
 
-  socket.on("private message", ({ recipient, message }) => {
-    io.to(recipient).emit("private message", {
-      sender: socket.id,
-      message,
-    });
+  socket.on("authenticate", (data) => {
+    const { userId } = data;
+    connectedUsers[userId] = socket.id;
+    console.log(connectedUsers);
+  });
+
+  socket.on("private_message", ({ recipient, message }) => {
+    console.log(message);
+    console.log(recipient);
+    const recipientSocketId = connectedUsers[recipient];
+    console.log(recipientSocketId);
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit("private_message", {
+        sender: socket.id,
+        message,
+      });
+    }
   });
 
   socket.on("disconnect", () => {
-    console.log("user disconnect");
+    console.log("user disconnect: ", socket.id);
   });
+  for (const [userId, socketId] of Object.entries(connectedUsers)) {
+    if (socketId === socket.id) {
+      delete connectedUsers[userId];
+      console.log(`User with ID ${userId} disconnected.`);
+    }
+  }
 });
 
 server.listen(port, () => console.log("server run on " + port));
