@@ -7,7 +7,7 @@ const { mapError } = require("../utils/apiError");
 
 exports.getCommentPost = async (req, res, next) => {
   try {
-    let { targetPostId } = req.body;
+    let { targetPostId } = req.params;
     let result = await getCommentPost(targetPostId);
     if (result.rowCount > 0) {
       res.status(200).json({
@@ -16,8 +16,7 @@ exports.getCommentPost = async (req, res, next) => {
         data: result.rows,
       });
     } else {
-      console.log(err);
-      mapError(400, "you can not comment", next);
+      mapError(400, "you can not fetch comment", next);
     }
   } catch (err) {
     console.log(err);
@@ -32,13 +31,13 @@ exports.getCommentPost = async (req, res, next) => {
 exports.createCommentPost = async (req, res, next) => {
   try {
     let { postText, postType } = req.body;
-    let { postId } = req.params;
+    let { targetPostId } = req.params;
     let result = await createCommentPost(
       postText,
       req.files?.post_picture ? req.files?.post_picture[0]?.path : "",
       postType,
       req.userId,
-      postId
+      targetPostId
     );
     if (result.rowCount > 0) {
       res

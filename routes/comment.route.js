@@ -6,7 +6,10 @@ const {
 } = require("../controllers/comment.controller");
 const commentRouter = express.Router();
 
-commentRouter.route("/:postId").get(getCommentPost).post(createCommentPost);
+commentRouter
+  .route("/:targetPostId")
+  .get(getCommentPost)
+  .post(createCommentPost);
 
 commentRouter.route("/:commentId").delete(deleteCommentPost);
 

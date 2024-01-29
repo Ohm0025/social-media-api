@@ -3,6 +3,7 @@ const userRouter = require("./user.route");
 const postRouter = require("./post.route");
 const friendRouter = require("./friend.route");
 const commentRouter = require("./comment.route");
+const likeRouter = require("./like.route");
 const authen = require("../middleware/authen");
 const uploadPicture = require("../middleware/upload");
 const { getCookies } = require("../controllers/cookie.controller");
@@ -19,5 +20,6 @@ router.use("/post", postRouter);
 router.use("/user", userRouter);
 router.use("/friend", friendRouter);
 router.use("/comment", commentRouter);
+router.use("/like", likeRouter);
 
 module.exports = router;

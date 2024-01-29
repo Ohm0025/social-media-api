@@ -1,3 +1,5 @@
+const pool = require("../../db/pool");
+
 module.exports = async (postText, postPicture, postType, userid, parentid) => {
   console.log("krowgkp");
   let sql = `insert into posts(post_content,post_date,post_type, post_picture,userid ${

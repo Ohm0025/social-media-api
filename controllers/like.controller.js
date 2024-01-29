@@ -1,4 +1,8 @@
-const { addLikePost, removeLikePost } = require("../services/like.service");
+const {
+  addLikePost,
+  removeLikePost,
+  toggleLike,
+} = require("../services/like.service");
 
 exports.addLikePost = async () => {
   try {
@@ -30,6 +34,27 @@ exports.removeLikePost = async (req, res, next) => {
       res.status(201).json({ status: 201, message: "remove like success" });
     } else {
       mapError(400, "remove like failure", next);
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.constraint) {
+      mapError(400, err.detail, next);
+    } else {
+      mapError(500, "internal server error", next);
+    }
+  }
+};
+
+exports.toggleLike = async (req, res, next) => {
+  try {
+    let { postid } = req.body;
+    let result = await toggleLike(postid, req.userId);
+    if (result.rowCount > 0) {
+      res
+        .status(201)
+        .json({ status: 201, message: "toggle like-post success" });
+    } else {
+      mapError(400, "toggle like-post failure", next);
     }
   } catch (err) {
     console.log(err);
