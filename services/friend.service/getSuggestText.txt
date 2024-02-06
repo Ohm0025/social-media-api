@@ -1,0 +1,5 @@
+select * from users u1 
+left join friends f on f.requesterid = u1.userid or f.accepterid = u1.userid 
+where u1.userid != $1 and f.status isnull
+limit $2 
+offset $3

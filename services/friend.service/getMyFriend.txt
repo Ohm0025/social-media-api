@@ -1,0 +1,4 @@
+select u2.* , count(f.friendid) as countFriend from users u 
+inner join friends f on u.userid = f.requesterid or u.userid = f.accepterid 
+inner join users u2 on u2.userid = f.requesterid or u2.userid = f.accepterid 
+where f.status = $1 and u.userid = $2 and u2.userid != $2 group by(u2.userid)

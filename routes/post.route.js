@@ -10,9 +10,11 @@ const postRouter = express.Router();
 
 postRouter.route("/").get(getStandardPost).post(createPost);
 
+postRouter.route("/standardpost").post(getStandardPost);
+
 postRouter.route("/:postid").delete(removePost);
 
-postRouter.route("/postMy").get(getMyPost);
+postRouter.route("/postMy").post(getMyPost);
 
 postRouter.route("/:otherid").get(getOtherUserPost);
 

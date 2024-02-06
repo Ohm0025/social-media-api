@@ -5,6 +5,7 @@ const {
   getRequest,
   getPending,
   getMoreFriend,
+  getSuggest,
 } = require("../services/friend.service");
 const { mapError } = require("../utils/apiError");
 
@@ -98,7 +99,7 @@ exports.getMoreFriend = async (req, res, next) => {
   try {
     let { searchName } = req.body;
     let result = await getMoreFriend(req.userId, searchName);
-    console.log(result.rows);
+
     if (result.rowCount > 0) {
       res.status(200).json({
         status: 200,
@@ -107,6 +108,25 @@ exports.getMoreFriend = async (req, res, next) => {
       });
     } else {
       mapError(400, "get more friend failure", next);
+    }
+  } catch (err) {
+    console.log(err);
+    mapError(500, "internal server error", next);
+  }
+};
+
+exports.getSuggest = async (req, res, next) => {
+  try {
+    let result = await getSuggest(req.userId);
+
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: 200,
+        data: result.rows,
+        message: "get suggest friend success",
+      });
+    } else {
+      mapError(400, "get suggest friend failure", next);
     }
   } catch (err) {
     console.log(err);

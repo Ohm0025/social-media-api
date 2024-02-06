@@ -4,6 +4,7 @@ const { acceptFriend } = require("./acceptFriend");
 const { getRequest } = require("./getRequest");
 const { getPending } = require("./getPending");
 const { getMoreFriend } = require("./getMoreFriend");
+const { getSuggest } = require("./getSuggest");
 
 module.exports = {
   getMyFriend,
@@ -12,4 +13,5 @@ module.exports = {
   getRequest,
   getPending,
   getMoreFriend,
+  getSuggest,
 };

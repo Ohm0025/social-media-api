@@ -7,7 +7,6 @@ exports.getMoreFriend = async (req, res, next) => {
     let sql =
       "select * from users u1 left join friends f on u1.userid = f.requesterid or u1.userid = f.accepterid where f.requesterid != $1 and f.accepterid != $1 and (u1.firstname like $2 or u1.lastname like $2)";
     let result = await pool.query(sql, [req.userId, searchName + "%" || ""]);
-    console.log(result);
     if (result.rowCount > 0) {
       res.status(200).json({
         status: 200,

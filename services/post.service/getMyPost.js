@@ -1,9 +1,38 @@
 const pool = require("../../db/pool");
+const fs = require("fs");
 
-exports.getMyPost = async (userid) => {
-  let sql =
-    "select distinct (p.postid),p.post_content , p.post_picture , u.userid ,u.firstname , u.lastname , p.post_date , count(distinct l.postid) count_like , count(distinct p2.postid) count_comment from posts p left join posts p2 on p2.parentid = p.postid left join users u on p.userid = u.userid left join like_post l on p.postid = l.postid where p.parentid isnull and u.userid = $1 group by (p.postid,u.firstname,u.lastname,u.profile_picture,u.userid) order by p.post_date desc,p.postid desc";
-  let result = await pool.query(sql, [userid]);
+exports.getMyPost = async (userid, limit, postType) => {
+  let sql1 = fs.readFileSync("services/post.service/getMyPOst.txt", {
+    encoding: "utf8",
+  });
+
+  let sql2 = fs.readFileSync("services/post.service/getMyPost2.txt", {
+    encoding: "utf8",
+  });
+
+  // ["All", "Friends", "Private"];
+  let selectPostType = () => {
+    if (postType === "All") {
+      return {
+        sql: sql2,
+        arr: [userid, +limit, +limit - 5 < 0 ? 0 : +limit - 5],
+      };
+    } else if (postType === "Friends") {
+      return {
+        sql: sql1,
+        arr: [userid, "only_friend", +limit, +limit - 5 < 0 ? 0 : +limit - 5],
+      };
+    } else if (postType === "Private") {
+      return {
+        sql: sql1,
+        arr: [userid, "private", +limit, +limit - 5 < 0 ? 0 : +limit - 5],
+      };
+    }
+  };
+
+  let selectPost = selectPostType();
+
+  let result = await pool.query(selectPost.sql, selectPost.arr);
 
   let sqlCheckLike =
     "select * from like_post l where userid = $1 and postid = $2";

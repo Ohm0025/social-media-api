@@ -9,20 +9,14 @@ const { mapError } = require("../utils/apiError");
 
 exports.createPost = async (req, res, next) => {
   try {
-    console.log("ararar");
     let { postText, postType, parentId } = req.body;
-    console.log(req.body);
-    let result = await createPost(
-      postText,
-      req.files?.post_picture ? req.files?.post_picture[0]?.path : "",
-      postType,
-      req.userId,
-      parentId
-    );
+    let result = await createPost(postText, postType, req.userId, parentId);
     if (result.rowCount > 0) {
-      res
-        .status(201)
-        .json({ status: 201, data: result, message: "create post success" });
+      res.status(201).json({
+        status: 201,
+        data: result.rows[0],
+        message: "create post success",
+      });
     } else {
       console.log("you can not post");
       mapError(400, "you can not post", next);
@@ -39,12 +33,12 @@ exports.createPost = async (req, res, next) => {
 
 exports.getStandardPost = async (req, res, next) => {
   try {
-    let result = await getStandardPost(req.userId);
-    console.log(result);
+    let { limit, postType } = req.body;
+    let result = await getStandardPost(req.userId, limit, postType);
     if (result.rowCount > 0) {
       res.status(200).json({
         status: 200,
-        data: result.rows,
+        data: result,
         message: "fetch public post success",
       });
     } else {
@@ -58,11 +52,12 @@ exports.getStandardPost = async (req, res, next) => {
 
 exports.getMyPost = async (req, res, next) => {
   try {
-    let result = await getMyPost(req.userId);
+    let { limit, postType } = req.body;
+    let result = await getMyPost(req.userId, limit, postType);
     if (result.rowCount > 0) {
       res.status(200).json({
         status: 200,
-        data: result.rows,
+        data: result,
         message: "fetch my post success",
       });
     } else {

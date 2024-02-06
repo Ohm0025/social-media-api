@@ -24,7 +24,8 @@ exports.getCookies = async (req, res, next) => {
       );
       // console.log(payload);
       if (payload) {
-        let sql = "select * from users u where u.userid = $1";
+        let sql =
+          "select u.* , count(f.friendid) as countFriend from users u left join friends f on u.userid = f.accepterid or u.userid = f.requesterid where u.userid = $1 group by u.userid";
         let result = await pool.query(sql, [payload.userId]);
         // console.log(result);
         if (result.rowCount > 0) {

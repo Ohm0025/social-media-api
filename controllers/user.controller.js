@@ -3,29 +3,18 @@ const {
   createUser,
   loginUser,
   selfDelete,
+  getOtherUserProfile,
 } = require("../services/user.service");
 const { mapError } = require("../utils/apiError");
 const { generateJWT, hashPassword } = require("../utils/security");
 
 exports.updateUser = async (req, res, next) => {
   try {
-    let profile_picture = req.files?.profile_picture
-      ? req.files?.profile_picture[0]
-        ? req.files?.profile_picture[0].path
-        : undefined
-      : undefined;
-
-    let profile_cover = req.files?.profile_cover
-      ? req.files?.profile_cover[0]
-        ? req.files?.profile_cover[0].path
-        : undefined
-      : undefined;
-
     let result = await updateUser(
       {
-        profile_picture: profile_picture || null,
-        profile_cover: profile_cover || null,
-        description: req.body.description,
+        profile_picture: req.body.profile_picture || null,
+        profile_cover: req.body.profile_cover || null,
+        description: req.body.description || null,
       },
       req.userId
     );
@@ -88,10 +77,37 @@ exports.loginUser = async (req, res, next) => {
         .status(200)
         .json({ status: 200, data: token, message: "login success" });
     } else {
-      mapError(400, "login failure", next);
+      mapError(400, "username or password is incorrect", next);
     }
   } catch (err) {
     console.log(err);
-    mapError(500, "internal server error", next);
+    if (err.message.includes("connect ECONNREFUSED")) {
+      mapError(500, "server down please try again later", next);
+    } else {
+      mapError(500, "internal server error", next);
+    }
+  }
+};
+
+exports.getOtherUserProfile = async (req, res, next) => {
+  try {
+    let { otherUserId } = req.body;
+    let result = await getOtherUserProfile(otherUserId, req.userId);
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: 200,
+        message: `get other user profile success`,
+        data: result.rows[0],
+      });
+    } else {
+      mapError(400, "get other user profile failure", next);
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.message.includes("connect ECONNREFUSED")) {
+      mapError(500, "server down please try again later", next);
+    } else {
+      mapError(500, "internal server error", next);
+    }
   }
 };
