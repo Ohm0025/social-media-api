@@ -40,41 +40,48 @@ const io = socketIo(server, {
   },
 });
 
-const connectedUsers = {};
+let connectedUsers = [];
 
 io.on("connection", (socket) => {
   console.log(`User connected with ID: ${socket.id}`);
 
-  socket.emit("your socket id", { socketId: socket.id });
-
-  socket.on("authenticate", (data) => {
-    const { userId } = data;
-    connectedUsers[userId] = socket.id;
-    console.log(connectedUsers);
-  });
-
-  socket.on("private_message", ({ recipient, message }) => {
-    console.log(message);
-    console.log(recipient);
-    const recipientSocketId = connectedUsers[recipient];
-    console.log(recipientSocketId);
-    if (recipientSocketId) {
-      io.to(recipientSocketId).emit("private_message", {
-        sender: socket.id,
-        message,
+  socket.on("registChatUser", (userid) => {
+    if (connectedUsers.indexOf((item) => item.userid === userid) >= 0) {
+      connectedUsers = connectedUsers.map((item) => {
+        if (item.userid === userid) {
+          return { ...item, socketId: socket.id };
+        } else {
+          return item;
+        }
       });
+    } else {
+      connectedUsers.push({ userid, socketId: socket.id });
     }
   });
+
+  socket.on("chat", (message, senderid, targetid) => {
+    console.log(message);
+    console.log(senderid);
+    console.log(targetid);
+
+    let targetSocketId = connectedUsers.find(
+      (item) => item.userid === targetid
+    );
+    console.log(targetSocketId);
+    io.to(targetSocketId?.socketId).emit("chat", message);
+  });
+
+  // socket.on("typing", (name) => {
+  //   console.log("typing : " + name);
+  //   socket.broadcast.emit("typing", name);
+  // });
 
   socket.on("disconnect", () => {
     console.log("user disconnect: ", socket.id);
+    connectedUsers = connectedUsers.filter(
+      (item) => item.socketId !== socket.id
+    );
   });
-  for (const [userId, socketId] of Object.entries(connectedUsers)) {
-    if (socketId === socket.id) {
-      delete connectedUsers[userId];
-      console.log(`User with ID ${userId} disconnected.`);
-    }
-  }
 });
 
 server.listen(port, () => console.log("server run on " + port));

@@ -1,5 +1,6 @@
 const pool = require("../db/pool");
 const jwt = require("jsonwebtoken");
+const { mapError } = require("../utils/apiError");
 
 exports.getCookies = async (req, res, next) => {
   try {
