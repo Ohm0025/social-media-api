@@ -5,6 +5,7 @@ const friendRouter = require("./friend.route");
 const commentRouter = require("./comment.route");
 const likeRouter = require("./like.route");
 const authen = require("../middleware/authen");
+const chatRouter = require("./chat.route");
 const uploadPicture = require("../middleware/upload");
 const { getCookies } = require("../controllers/cookie.controller");
 const { createUser, loginUser } = require("../controllers/user.controller");
@@ -21,5 +22,6 @@ router.use("/user", userRouter);
 router.use("/friend", friendRouter);
 router.use("/comment", commentRouter);
 router.use("/like", likeRouter);
+router.use("/chat", chatRouter);
 
 module.exports = router;

@@ -1,0 +1,2 @@
+select c.* from chats c where (c.senderid = $1 and c.receiveid = $2) or 
+(c.senderid = $2 and c.receiveid = $1) order by c.chat_last_mod desc limit 1
