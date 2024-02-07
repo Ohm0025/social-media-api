@@ -14,15 +14,17 @@ exports.getContact = async (userid) => {
 
   let arr = [];
 
-  for (let i = 0; i < result.rowCount; i++) {
-    let result2 = await pool.query(sql2, [userid, result.rows[i].userid]);
-    let typeChat = result2.rows[0].senderid === userid ? "sender" : "reader";
-    arr.push({
-      ...result.rows[i],
-      lastChat: result2.rows[0].chatcontent,
-      dateChat: result2.rows[0].chat_last_mod,
-      typeChat,
-    });
+  if (result.rowCount > 0) {
+    for (let i = 0; i < result.rowCount; i++) {
+      let result2 = await pool.query(sql2, [userid, result.rows[i].userid]);
+      let typeChat = result2.rows[0]?.senderid === userid ? "sender" : "reader";
+      arr.push({
+        ...result.rows[i],
+        lastChat: result2.rows[0]?.chatcontent,
+        dateChat: result2.rows[0]?.chat_last_mod,
+        typeChat,
+      });
+    }
   }
   //   let result2 = await pool.query(sql2, [userid, targetid]);
   //   console.log(result2);
