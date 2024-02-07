@@ -60,14 +60,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chat", (message, senderid, targetid) => {
-    console.log(message);
-    console.log(senderid);
-    console.log(targetid);
-
     let targetSocketId = connectedUsers.find(
       (item) => item.userid === targetid
     );
-    console.log(targetSocketId);
+
     io.to(targetSocketId?.socketId).emit("chat", message);
   });
 

@@ -8,8 +8,6 @@ exports.createPost = async (postText, postType, userid, parentid) => {
   let arrQuery = parentid
     ? [postText, date_now, postType, userid, parentid]
     : [postText, date_now, postType, userid];
-  console.log(arrQuery);
-  console.log(sql);
   let result = await pool.query(sql, arrQuery);
   return result;
 };

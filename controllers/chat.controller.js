@@ -47,6 +47,7 @@ exports.createChat = async (req, res, next) => {
     if (result.rowCount > 0) {
       res.status(201).json({
         status: 201,
+        data: result.rows[0],
         message: "create chat success",
       });
     } else {
