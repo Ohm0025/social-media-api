@@ -37,11 +37,6 @@ exports.createUser = async (req, res, next) => {
       });
       res
         .status(200)
-        // .cookie("jwt", token, {
-        //   expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
-        //   httpOnly: true,
-        //   //secure: true,
-        // })
         .json({ status: 200, data: token, message: "create user success" });
     } else {
       res.status(500).json({ status: 500, date: "resgister error" });

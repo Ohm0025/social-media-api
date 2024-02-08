@@ -1,25 +1,11 @@
-select distinct (p.postid),
-p.post_type,
-p.post_content,
-p.post_date,
-p.post_picture,
-u.userid,
-u.firstname,
-u.lastname,
-u.profile_picture,
-count(distinct l.postid) count_like,
-count(distinct p2.postid) count_comment 
-from posts p 
-left join posts p2 on p2.parentid = p.postid 
-left join users u on u.userid = p.userid 
-left join friends f on f.requesterid = u.userid or f.accepterid = u.userid 
-left join users u2 on f.requesterid = u2.userid or f.accepterid = u2.userid 
-left join like_post l on p.postid = l.postid 
-where p.parentid isnull and 
-(
-    ((f.requesterid = $3 or f.accepterid = $3) and f.status = $2 and p.post_type = $6) or
-    p.post_type = $1 
-)
+select p.* , u1.* ,count(distinct like_postid) as count_like , count(distinct cp.postid) as count_comment from posts p 
+left join like_post l on l.postid = p.postid
+left join posts cp on cp.parentid = p.postid 
+left join users u1 on p.userid = u1.userid 
+left join friends f on f.requesterid = u1.userid or 
+f.accepterid = u1.userid 
+where p.parentid isnull and (u1.userid = $1 or (p.post_type = 'only_friend' and f.status = 'accept') or 
+p.post_type = 'public')
+group by (p.postid,u1.userid)
+order by post_date desc
 
-group by (p.postid,u.firstname,u.lastname,u.profile_picture,u.userid) 
-order by post_date desc limit $4 offset $5

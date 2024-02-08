@@ -28,14 +28,7 @@ exports.getStandardPost = async (userid, limit, postType) => {
     } else {
       return {
         sql: sql1,
-        arr: [
-          "public",
-          "accept",
-          userid,
-          +limit,
-          +limit - 5 < 0 ? 0 : +limit - 5,
-          "only_friend",
-        ],
+        arr: [userid],
       };
     }
   };
@@ -57,6 +50,6 @@ exports.getStandardPost = async (userid, limit, postType) => {
       return { ...element, thisUserLike: check };
     })
   );
-  console.log(result.rowCount);
+
   return { rows: modArr, rowCount: modArr.length };
 };
