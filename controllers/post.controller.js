@@ -5,6 +5,7 @@ const {
   removePost,
   getOtherUserPost,
   getPicturePost,
+  editPost,
 } = require("../services/post.service");
 const { mapError } = require("../utils/apiError");
 
@@ -146,5 +147,30 @@ exports.getPicturePost = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     mapError(500, "internal server error", next);
+  }
+};
+
+exports.editPost = async (req, res, next) => {
+  try {
+    let { postid } = req.params;
+    let { postText, postType } = req.body;
+    let result = await editPost(postid, postText, postType);
+    if (result.rowCount > 0) {
+      res.status(201).json({
+        status: 201,
+        data: result.rows[0],
+        message: "edit post success",
+      });
+    } else {
+      console.log("you can not edit post");
+      mapError(400, "you can not edit post", next);
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.constraint) {
+      mapError(400, err.detail, next);
+    } else {
+      mapError(500, "internal server error", next);
+    }
   }
 };

@@ -4,6 +4,7 @@ const { getStandardPost } = require("./getStandardpost");
 const { removePost } = require("./removePost");
 const { getOtherUserPost } = require("./getOtherUserPost");
 const { getPicturePost } = require("./getPicturePost");
+const { editPost } = require("./editPost");
 
 module.exports = {
   createPost,
@@ -12,4 +13,5 @@ module.exports = {
   removePost,
   getOtherUserPost,
   getPicturePost,
+  editPost,
 };

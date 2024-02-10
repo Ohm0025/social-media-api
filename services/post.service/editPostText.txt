@@ -1,0 +1,4 @@
+UPDATE public.posts
+SET post_content = $1, 
+post_type = $2
+WHERE postid = $3
