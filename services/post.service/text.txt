@@ -1,4 +1,5 @@
 select distinct(p.postid),
+p.postid,
 p.post_date,
 p.post_picture,
 p.post_content,
@@ -21,6 +22,7 @@ where p.parentid isnull and
 u.userid = $3 and 
 f.status = $2 and 
 (f.requesterid = $1 or f.accepterid = $1) and 
-p.postid is not null 
+p.postid is not null and
+p.post_type != 'private'
 group by (p.postid,u.firstname,u.lastname,u.profile_picture,l.userid,u.userid,f.friendid) 
 order by p.post_date desc,p.postid desc

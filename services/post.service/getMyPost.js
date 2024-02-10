@@ -15,17 +15,17 @@ exports.getMyPost = async (userid, limit, postType) => {
     if (postType === "All") {
       return {
         sql: sql2,
-        arr: [userid, +limit, +limit - 5 < 0 ? 0 : +limit - 5],
+        arr: [userid],
       };
     } else if (postType === "Friends") {
       return {
         sql: sql1,
-        arr: [userid, "only_friend", +limit, +limit - 5 < 0 ? 0 : +limit - 5],
+        arr: [userid, "only_friend"],
       };
     } else if (postType === "Private") {
       return {
         sql: sql1,
-        arr: [userid, "private", +limit, +limit - 5 < 0 ? 0 : +limit - 5],
+        arr: [userid, "private"],
       };
     }
   };

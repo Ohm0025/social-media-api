@@ -11,6 +11,7 @@ exports.getOtherUserPost = async (userid, otherid) => {
 
   let result = await pool.query(sql, [userid, "accept", otherid]);
   if (result.rowCount > 0) {
+    console.log("run sql 1");
     return result;
   }
   let sql2 = fs.readFileSync("services/post.service/text2.txt", {
@@ -20,7 +21,8 @@ exports.getOtherUserPost = async (userid, otherid) => {
   let result2 = await pool.query(sql2, [otherid, "public"]);
 
   if (result2.rowCount > 0) {
-    console.log(result2);
+    console.log("run sql 2");
+
     return result2;
   } else {
     let sql3 = "select * from users u where u.userid = $1";
@@ -37,6 +39,8 @@ exports.getOtherUserPost = async (userid, otherid) => {
     result3.sendObj = sendObj;
     result3.rows = [];
     result3.rowCount = 1;
+
+    console.log("run sql 3");
     return result3;
   }
 };

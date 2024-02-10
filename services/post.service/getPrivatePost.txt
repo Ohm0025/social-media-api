@@ -1,4 +1,6 @@
 select distinct (p.postid),
+p.postid,
+p.userid,
 p.post_type,
 p.post_content,
 p.post_date,
@@ -16,4 +18,4 @@ left join users u2 on f.requesterid = u2.userid or f.accepterid = u2.userid
 left join like_post l on p.postid = l.postid 
 where p.parentid isnull and p.userid = $1 and p.post_type = $2 
 group by (p.postid,u.firstname,u.lastname,u.profile_picture) 
-order by post_date desc limit $3 offset $4 
+order by post_date desc
