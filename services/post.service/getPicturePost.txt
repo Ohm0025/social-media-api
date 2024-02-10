@@ -1,0 +1,4 @@
+select  p.postid , 
+regexp_matches(p.post_content, '<img[^>]+src="([^'']+)"', 'g') AS image_tag
+from posts p 
+where p.userid = $1 and p.post_type != 'private' and p.parentid isnull

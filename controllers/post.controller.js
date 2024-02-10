@@ -4,6 +4,7 @@ const {
   getMyPost,
   removePost,
   getOtherUserPost,
+  getPicturePost,
 } = require("../services/post.service");
 const { mapError } = require("../utils/apiError");
 
@@ -122,6 +123,25 @@ exports.getOtherUserPost = async (req, res, next) => {
       });
     } else {
       mapError(400, "get other post failure", next);
+    }
+  } catch (err) {
+    console.log(err);
+    mapError(500, "internal server error", next);
+  }
+};
+
+exports.getPicturePost = async (req, res, next) => {
+  try {
+    let { targetId } = req.body;
+    let result = await getPicturePost(targetId);
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: 200,
+        data: result,
+        message: "fetch picture post success",
+      });
+    } else {
+      mapError(400, "fetch picture post error", next);
     }
   } catch (err) {
     console.log(err);

@@ -31,5 +31,6 @@ exports.getSuggest = async (userid) => {
   let executeOffset = calOffSetLimit();
 
   let result = await pool.query(sql, [userid, 5, executeOffset.offset]);
+
   return result;
 };

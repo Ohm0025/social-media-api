@@ -5,6 +5,7 @@ const {
   getStandardPost,
   getMyPost,
   getOtherUserPost,
+  getPicturePost,
 } = require("../controllers/post.controller");
 const postRouter = express.Router();
 
@@ -17,5 +18,7 @@ postRouter.route("/:postid").delete(removePost);
 postRouter.route("/postMy").post(getMyPost);
 
 postRouter.route("/:otherid").get(getOtherUserPost);
+
+postRouter.route("/getPicture").post(getPicturePost);
 
 module.exports = postRouter;
