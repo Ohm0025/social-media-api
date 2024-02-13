@@ -18,7 +18,7 @@ exports.getStandardPost = async (userid, limit, postType) => {
     if (postType === "Private") {
       return {
         sql: sql3,
-        arr: [userid, "private", +limit, +limit - 5 < 0 ? 0 : +limit - 5],
+        arr: [userid, "private"],
       };
     } else if (postType === "Friends") {
       console.log("get friend post");

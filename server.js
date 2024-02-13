@@ -67,13 +67,7 @@ io.on("connection", (socket) => {
     io.to(targetSocketId?.socketId).emit("chat", message);
   });
 
-  // socket.on("typing", (name) => {
-  //   console.log("typing : " + name);
-  //   socket.broadcast.emit("typing", name);
-  // });
-
   socket.on("disconnect", () => {
-    console.log("user disconnect: ", socket.id);
     connectedUsers = connectedUsers.filter(
       (item) => item.socketId !== socket.id
     );
