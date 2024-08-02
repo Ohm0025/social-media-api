@@ -1,0 +1,11 @@
+select p2.* ,u.* ,count(distinct like_postid) as count_like , count(distinct cp.postid) as count_comment from posts p2 
+left join like_post l on l.postid = p2.postid
+left join posts cp on cp.parentid = p2.postid 
+left join users u on p2.userid = u.userid 
+left join friends f on f.requesterid = u.userid or f.accepterid = u.userid
+where p2.parentid isnull and 
+((p2.post_type = 'only_friend' and f.status = 'accept' and 
+(f.accepterid = $1 or f.requesterid = $1)) or 
+p2.post_type = 'public') or (u.userid = $1 and p2.parentid isnull)
+group by (p2.postid,u.userid)
+order by p2.post_date desc

@@ -1,0 +1,5 @@
+select * from friends f 
+left join users u1 on f.requesterid = u1.userid or f.accepterid = u1.userid 
+left join users u2 on (f.requesterid = u2.userid and f.accepterid = u1.userid) 
+or (f.requesterid = u1.userid and f.accepterid = u2.userid) 
+where u1.userid = $1 and u2.userid = $2 and f.status = 'accept'

@@ -1,0 +1,16 @@
+SELECT distinct u.userid , u.* , count(f.friendid) as countfriend
+FROM users u left join friends f on f.requesterid = u.userid or f.accepterid = u.userid and f.status = 'accept'
+WHERE u.userid NOT IN (
+    SELECT f1.requesterid
+    FROM friends f1
+    WHERE f1.accepterid = $1
+    UNION
+    SELECT f2.accepterid
+    FROM friends f2
+    WHERE f2.requesterid = $1
+)
+AND u.userid != $1
+
+group by (u.userid , f.friendid)
+limit $2
+offset $3

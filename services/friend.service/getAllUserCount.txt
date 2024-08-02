@@ -1,0 +1,2 @@
+select count(userid) from users 
+where userid != $1

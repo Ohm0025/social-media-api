@@ -1,0 +1,20 @@
+select distinct(p.postid),
+p.post_date,
+p.post_picture,
+p.post_content, 
+p.post_type,
+u.profile_picture,
+u.profile_cover,
+u.firstname,
+u.lastname,
+u.description,
+u.userid,
+count(distinct l.postid) count_like , 
+count(distinct p2.postid) count_comment 
+from users u 
+left join posts p on u.userid = p.userid 
+left join posts p2 on p2.parentid = p.postid 
+left join like_post l on l.postid = p.postid 
+where p.parentid isnull and u.userid = $1 and p.post_type = $2
+group by (p.postid,u.firstname,u.lastname,u.profile_picture,l.userid,u.userid) 
+order by p.post_date desc,p.postid desc

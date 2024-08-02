@@ -1,0 +1,3 @@
+select distinct f.friendid , count(f.friendid) as countFriend  ,u.* from users u
+left join friends f on f.requesterid = u.userid or f.accepterid = u.userid  
+where u.userid = $1 and f.status = 'accept' group by (f.friendid,u.userid)
