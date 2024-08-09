@@ -1,4 +1,4 @@
 /node_modules
-/public
+/garbage
 *.env
 /bootcamp-image-postgrest-pgadmin

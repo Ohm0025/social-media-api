@@ -9,6 +9,7 @@ const socketIo = require("socket.io");
 const { apiError } = require("./utils/apiError");
 const router = require("./routes/router");
 const bodyParser = require("body-parser");
+const { testgetUserAll } = require("./garbage/functionTest/connectRailway");
 
 const app = express();
 
