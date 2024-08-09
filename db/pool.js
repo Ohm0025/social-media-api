@@ -4,11 +4,11 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
 
 const pool = new Pool({
-  database: "railway",
-  host: "monorail.proxy.rlwy.net",
-  port: 46088,
-  user: "postgres",
-  password: "mFPugGZuxevMcwNSExOPaYuvbFOOsVCc",
+  database: process.env.DATABASE,
+  host: process.env.HOST,
+  port: process.env.PORT,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
 });
 
 module.exports = pool;

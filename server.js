@@ -9,7 +9,6 @@ const socketIo = require("socket.io");
 const { apiError } = require("./utils/apiError");
 const router = require("./routes/router");
 const bodyParser = require("body-parser");
-const { testgetUserAll } = require("./garbage/functionTest/connectRailway");
 
 const app = express();
 
@@ -37,7 +36,7 @@ app.use(apiError);
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.SOCKET_ORIGIN,
   },
 });
 
