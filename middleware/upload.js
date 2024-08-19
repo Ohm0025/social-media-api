@@ -20,7 +20,10 @@ const storage = multer.diskStorage({
 });
 
 //create multer upload instance
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: { fieldSize: 2 * 1024 * 1024 },
+});
 
 //custom file upload middleware
 const uploadMiddleware = (req, res, next) => {
