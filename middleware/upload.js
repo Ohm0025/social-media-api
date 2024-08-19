@@ -1,9 +1,11 @@
 const multer = require("multer");
+const dirname = __dirname;
+const path = dirname.replace("middleware", "public/images");
 
 //configure multer storage and fill name
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/images");
+    cb(null, path);
   },
   filename: (req, file, cb) => {
     cb(
