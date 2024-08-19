@@ -46,6 +46,8 @@ const uploadMiddleware = (req, res, next) => {
     },
   ])(req, res, (err) => {
     if (err) {
+      const { postObj } = req.body;
+      console.log(postObj);
       console.log(err);
       return res.status(400).json({ error: err.message });
     }
