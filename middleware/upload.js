@@ -43,6 +43,7 @@ const uploadMiddleware = (req, res, next) => {
     },
   ])(req, res, (err) => {
     if (err) {
+      console.log(err);
       return res.status(400).json({ error: err.message });
     }
     //retrive uploaded files
